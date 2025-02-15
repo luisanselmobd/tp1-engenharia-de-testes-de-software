@@ -25,6 +25,8 @@ SOFTWARE.
 import java.util.Scanner;
 
 class CalculoIMC {
+
+
 	public static String classificarIMC(double imc) {
 		if (imc < 16.0) {
 			return "Magreza grave";
@@ -55,11 +57,11 @@ class CalculoIMC {
 	public static double calcularPeso(double peso, double altura) {
 		return peso / (altura * altura);
 	}
-	
+
 	public static void programaIMC(String versao) {
 		double peso, altura, imc;
 		Scanner pScan = new Scanner(System.in);
-		Scanner aScan = new Scanner(System.in);
+		//Scanner aScan = new Scanner(System.in);
 		
 		System.out.println("===========================");
 		System.out.printf("Cálculo do IMC - Versão %s\n", versao);
@@ -67,17 +69,17 @@ class CalculoIMC {
 		
 		System.out.print("Insira o seu peso em quilogramas: ");
 		peso = Double.parseDouble(pScan.nextLine());
-		
+
 		System.out.print("Insira o sua altura em metros: ");
-		altura = Double.parseDouble(aScan.nextLine());
-		
+		altura = Double.parseDouble(pScan.nextLine());
+
 		imc = calcularPeso(peso, altura);
 		
 		System.out.printf("\nSeu índice de massa corporal é: %.2f kg/m²\n", imc);
 		System.out.printf("Classificação: %s.\n", classificarIMC(imc));
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args){
 		String versao = "1.0";
 		programaIMC(versao);
 	}

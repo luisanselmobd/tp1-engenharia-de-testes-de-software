@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Classes de Ajuda/Classes de Ajuda.iml" filepath="$PROJECT_DIR$/Classes de Ajuda/Classes de Ajuda.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tp1-engenharia-de-testes-de-software.iml" filepath="$PROJECT_DIR$/tp1-engenharia-de-testes-de-software.iml" />
+    </modules>
+  </component>
+</project>
