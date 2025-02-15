@@ -13,18 +13,14 @@ import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 public class CalculoIMCTeste {
-
-
-
     private void gerarInput(String valor) {
         InputStream in = new ByteArrayInputStream(valor.getBytes());
         System.setIn(in);
     }
-
     String mensagemErroPeso = "Peso inválido. Digite um valor numérico entre 0,2 e 700,00.";
     String mensagemErroAltura = "Altura inválida. Digite um valor numérico entre 0,2 e 2,60.";
 
-
+    //Parte 2 - 3 - Gerando Conjuntos Diversificados de Dados
     @Provide
     Arbitrary<Double> pesoExtremo() {
         return oneOf(
@@ -33,11 +29,13 @@ public class CalculoIMCTeste {
         );
     }
 
+    //Parte 2 - 3 - Gerando Conjuntos Diversificados de Dados
     @Provide
     Arbitrary<Double> pesoCorreto() {
         return doubles().between(0.2, 700);
     }
 
+    //Parte 2 - 3 - Gerando Conjuntos Diversificados de Dados
     @Provide
     Arbitrary<Double> alturaExtrema() {
         return oneOf(
@@ -46,11 +44,13 @@ public class CalculoIMCTeste {
         );
     }
 
+    //Parte 2 - 3 - Gerando Conjuntos Diversificados de Dados
     @Provide
     Arbitrary<Double> alturaCorreta() {
         return doubles().between(0.2, 2.6);
     }
 
+    //Parte 2 - 5 - Isolando Dependências com Mocks
     @Test
     public void calcularPesoComMock() {
         MockedStatic<CalculoIMC> mockedStatic = Mockito.mockStatic(CalculoIMC.class);
@@ -64,6 +64,7 @@ public class CalculoIMCTeste {
         mockedStatic.verify(() -> CalculoIMC.calcularPeso(peso, altura));
     }
 
+    //4 - Partições Equivalentes para Entrada de Dados
     @Test
     public void calculosValidos() {
         assertEquals(22.86, CalculoIMC.calcularPeso(70, 1.75), 0.01);
@@ -71,12 +72,14 @@ public class CalculoIMCTeste {
         assertEquals(18.36, CalculoIMC.calcularPeso(50, 1.65), 0.01);
     }
 
+    //Parte 2 - 4 - Analisando Contraprovações Geradas pelo Jqwik
     @Property
-    void calculosValidos(@ForAll @From("pesoCorreto") Double peso, @ForAll @From("alturaCorreta") Double  altura) {
+    void calculosValidos(@ForAll Double peso, @ForAll Double  altura) {
         double imc = CalculoIMC.calcularPeso(peso, altura);
         assertThat(imc).isGreaterThanOrEqualTo(0);
     }
 
+    //2 - Explicação do Conceito de Testes Baseados em Propriedades
     @Test
     public void classificacaoIMCCorreta() {
         assertEquals("Magreza grave", CalculoIMC.classificarIMC(15.9));
@@ -89,6 +92,7 @@ public class CalculoIMCTeste {
         assertEquals("Obesidade Grau III", CalculoIMC.classificarIMC(40));
     }
 
+    //Parte 2 - 6 - Criando Testes Baseados em Propriedades para Valores Específicos
     @Example
     void imcCasoMinimo() {
         Double resultado = 0.2 / (0.2 * 0.2);
@@ -96,12 +100,14 @@ public class CalculoIMCTeste {
         assertThat(CalculoIMC.calcularPeso(0.2, 0.2)).isEqualTo(resultado);
     }
 
+    //Parte 2 - 6 - Criando Testes Baseados em Propriedades para Valores Específicos
     @Example
     void imcCasoMaximo() {
         Double resultado = 700 / (2.6 * 2.6);
         assertThat(CalculoIMC.calcularPeso(700, 2.6)).isEqualTo(resultado);
     }
 
+    //4 - Analisando Contraprovações Geradas pelo Jqwik
     @Test
     public void valoresComVirgula() {
         assertDoesNotThrow(() -> {
@@ -110,6 +116,7 @@ public class CalculoIMCTeste {
         });
     }
 
+    //Parte 2 - 3 - Gerando Conjuntos Diversificados de Dados
     @Property
     void valoresComVirgula(@ForAll @From("pesoCorreto") Double peso, @ForAll @From("alturaCorreta") Double  altura) {
         String mensagem = String.format("%f\n%f\n", peso, altura);
@@ -117,6 +124,8 @@ public class CalculoIMCTeste {
         assertDoesNotThrow(() -> CalculoIMC.programaIMC("1"));
     }
 
+    //4 - Partições Equivalentes para Entrada de Dados
+    //5 - Análise de Limites
     @Test
     public void pesoMenorQueOPermitido() {
         Exception exception = assertThrows(Exception.class, () -> {
@@ -126,6 +135,8 @@ public class CalculoIMCTeste {
         assertEquals(mensagemErroPeso, exception.getMessage());
     }
 
+    //4 - Partições Equivalentes para Entrada de Dados
+    //5 - Análise de Limites
     @Test
     public void pesoMaiorQueOPermitido() {
         Exception exception = assertThrows(Exception.class, () -> {
@@ -135,6 +146,8 @@ public class CalculoIMCTeste {
         assertEquals(mensagemErroPeso, exception.getMessage());
     }
 
+    //Parte 2 - 2 - Criando Testes Baseados em Propriedades com Jqwik
+    //Parte 2 - 3 - Gerando Conjuntos Diversificados de Dados
     @Property
     public void pesosExtremos(@ForAll @From("pesoExtremo") Double peso, @ForAll @From("alturaCorreta") Double altura) {
         Exception exception = assertThrows(Exception.class, () -> {
@@ -145,6 +158,7 @@ public class CalculoIMCTeste {
         assertThat(exception.getMessage()).isEqualTo(mensagemErroPeso);
     }
 
+    //4 - Partições Equivalentes para Entrada de Dados
     @Test
     public void pesoFormatoNaoNumerico() {
         Exception exception = assertThrows(Exception.class, () -> {
@@ -154,6 +168,8 @@ public class CalculoIMCTeste {
         assertEquals(mensagemErroPeso, exception.getMessage());
     }
 
+    //4 - Partições Equivalentes para Entrada de Dados
+    //5 - Análise de Limites
     @Test
     public void alturaMenorQueAPermitida() {
         Exception exception = assertThrows(Exception.class, () -> {
@@ -163,6 +179,8 @@ public class CalculoIMCTeste {
         assertEquals(mensagemErroAltura, exception.getMessage());
     }
 
+    //4 - Partições Equivalentes para Entrada de Dados
+    //5 - Análise de Limites
     @Test
     public void alturaMaiorQueAPermitida() {
         Exception exception = assertThrows(Exception.class, () -> {
@@ -172,6 +190,8 @@ public class CalculoIMCTeste {
         assertEquals(mensagemErroAltura, exception.getMessage());
     }
 
+    //Parte 2 - 2 - Criando Testes Baseados em Propriedades com Jqwik
+    //Parte 2 - 3 - Gerando Conjuntos Diversificados de Dados
     @Property
     public void alturasExtremas(@ForAll @From("pesoCorreto") Double peso, @ForAll @From("alturaExtrema") Double altura) {
         Exception exception = assertThrows(Exception.class, () -> {
@@ -182,6 +202,7 @@ public class CalculoIMCTeste {
         assertThat(exception.getMessage()).isEqualTo(mensagemErroAltura);
     }
 
+    //4 - Partições Equivalentes para Entrada de Dados
     @Test
     public void alturaFormatoNaoNumerico() {
         Exception exception = assertThrows(Exception.class, () -> {
